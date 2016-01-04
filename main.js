@@ -7,6 +7,7 @@
   var fov = 150;
   var ctx = canvas.getContext('2d');
   var start = window.mozAnimationStartTime || new Date().getTime();
+  var cachedCircles = {};
   var pixels = [];
 
   function generate() {
@@ -47,7 +48,6 @@
 
   function render() {
     ctx.clearRect(0, 0, ctxWidth, ctxHeight);
-    var imagedata = ctx.getImageData(0, 0, ctxWidth, ctxHeight);
     var i = pixels.length;
 
     while (i--) {
@@ -61,14 +61,18 @@
 
       //marking the points only if they are inside the screen
       if (x2d >= 0 && x2d <= ctxWidth && y2d >= 0 && y2d <= ctxHeight) {
-        var rad = ctx.createRadialGradient(x2d + 25, y2d + 25,  1, x2d + 50, y2d + 50, 50);
-        rad.addColorStop(1, 'transparent');
-        rad.addColorStop(0.1, 'rgba(255, 255, 255, 1.0)');
-        rad.addColorStop(0.2, 'rgba(255, 255, 255, 0.1)');
-        rad.addColorStop(0.3, 'rgba(255, 0, 133, 0.5)');
-        rad.addColorStop(0.6, 'rgba(255, 0, 133, 0.3)');
-        rad.addColorStop(0.7, 'rgba(255, 0, 133, 0.1)');
-        ctx.fillStyle = rad;
+        if (!cachedCircles[x2d + '-' + y2d]) {
+          var rad = ctx.createRadialGradient(x2d + 25, y2d + 25,  1, x2d + 50, y2d + 50, 50);
+          rad.addColorStop(1, 'transparent');
+          rad.addColorStop(0.1, 'rgba(255, 255, 255, 1.0)');
+          rad.addColorStop(0.2, 'rgba(255, 255, 255, 0.1)');
+          rad.addColorStop(0.3, 'rgba(255, 0, 133, 0.5)');
+          rad.addColorStop(0.6, 'rgba(255, 0, 133, 0.3)');
+          rad.addColorStop(0.7, 'rgba(255, 0, 133, 0.1)');
+          cachedCircles[x2d + '-' + y2d] = rad;
+        }
+
+        ctx.fillStyle = cachedCircles[x2d + '-' + y2d];
         ctx.fillRect(x2d, y2d, 100, 100);
       }
 
@@ -81,7 +85,7 @@
 
     setTimeout(function () {
       requestAnimationFrame(render);
-    }, 1000 / 30);
+    }, 1000 / 35);
   }
 
   generate(start);
