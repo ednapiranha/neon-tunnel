@@ -4,7 +4,7 @@
   var canvas = document.querySelector('canvas');
   var ctxWidth = canvas.width = window.innerWidth;
   var ctxHeight = canvas.height = window.innerHeight;
-  var fov = 120;
+  var fov = 150;
   var ctx = canvas.getContext('2d');
   var pixels = [];
 
@@ -13,12 +13,12 @@
       for (var z = -350; z < 350; z += 50) {
         pixels.push(
           {
-            x: 230,
+            x: 300,
             y: x,
             z: z
           },
           {
-            x: -250,
+            x: -350,
             y: x,
             z: z
           });
@@ -30,12 +30,12 @@
         pixels.push(
           {
             x: x,
-            y: 250,
+            y: 300,
             z: z
           },
           {
             x: x,
-            y: -250,
+            y: -350,
             z: z
           });
       }
@@ -57,14 +57,15 @@
 
         //marking the points only if they are inside the screen
         if (x2d >= 0 && x2d <= ctxWidth && y2d >= 0 && y2d <= ctxHeight) {
-          var rad = ctx.createRadialGradient(x2d + 10, y2d + 50,  10, x2d + 70, y2d + 130, 50);
-          rad.addColorStop(0, 'transparent');
+          var rad = ctx.createRadialGradient(x2d + 25, y2d + 25,  1, x2d + 50, y2d + 50, 50);
+          rad.addColorStop(1, 'transparent');
           rad.addColorStop(0.1, 'rgba(255, 255, 255, 1.0)');
-          rad.addColorStop(0.2, 'rgba(255, 255, 255, 0.3)');
-          rad.addColorStop(0.3, 'rgba(255, 0, 133, 0.6)');
-          rad.addColorStop(0.8, 'rgba(255, 0, 133, 0.1)');
+          rad.addColorStop(0.2, 'rgba(255, 255, 255, 0.1)');
+          rad.addColorStop(0.3, 'rgba(255, 0, 133, 0.5)');
+          rad.addColorStop(0.6, 'rgba(255, 0, 133, 0.3)');
+          rad.addColorStop(0.7, 'rgba(255, 0, 133, 0.1)');
           ctx.fillStyle = rad;
-          ctx.fillRect(x2d, y2d, 150, 90);
+          ctx.fillRect(x2d, y2d, 100, 100);
         }
 
         pixel.z -= 1;
@@ -75,7 +76,7 @@
       }
     }
 
-    setInterval(render, 1000 / 130);
+    setInterval(render, 1000 / 30);
   }
 
   generate();
