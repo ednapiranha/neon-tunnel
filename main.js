@@ -99,6 +99,12 @@
 
         ctx.translate(ctx.width, ctx.height);
 
+        if (switchLayout) {
+          ctx.rotate(180);
+        } else {
+          ctx.rotate(0);
+        }
+
         if (shapeType === 1) {
           ctx.fillRect(x2d, y2d, 100, 100);
         } else {
@@ -123,6 +129,7 @@
 
   window.onclick = function () {
     switchLayout = !switchLayout;
+    ctx.clearRect(0, 0, ctxWidth, ctxHeight);
     if (switchLayout) {
       body.classList.add('switch');
     } else {
