@@ -5,7 +5,7 @@
   var body = document.body;
   var ctxWidth = canvas.width = window.innerWidth;
   var ctxHeight = canvas.height = window.innerHeight;
-  var fov = 250;
+  var fov = 150;
   var ctx = canvas.getContext('2d');
   var start = window.mozAnimationStartTime || new Date().getTime();
   var cachedCircles = {};
@@ -13,43 +13,48 @@
   var switchLayout = false;
 
   function generate() {
-    for (var x = -350; x < 350; x += 50) {
-      for (var z = -350; z < 350; z += 50) {
+    var max = 350;
+
+    if (switchLayout) {
+      max = 500;
+    }
+
+    for (var x = -max; x < max; x += 50) {
+      for (var z = -max; z < max; z += 50) {
         pixels.push(
           {
-            x: 300,
+            x: max - 50,
             y: x,
             z: z
           },
           {
-            x: -350,
+            x: -max,
             y: x,
             z: z
           });
       }
     }
 
-    for (var x = -350; x < 350; x += 50) {
-      for (var z = -350; z < 350; z += 50) {
+    for (var x = -max; x < max; x += 50) {
+      for (var z = -max; z < max; z += 50) {
         pixels.push(
           {
             x: x,
-            y: 300,
+            y: max - 50,
             z: z
           },
           {
             x: x,
-            y: -350,
+            y: -max,
             z: z
           });
       }
     }
-
-    render();
   }
 
   function render() {
     ctx.clearRect(0, 0, ctxWidth, ctxHeight);
+
     var i = pixels.length;
 
     while (i--) {
@@ -75,11 +80,12 @@
             rad.addColorStop(0.2, 'rgba(255, 255, 255, 0.1)');
             if (switchLayout) {
               rad.addColorStop(0.3, 'rgba(0, 173, 255, 0.5)');
+              rad.addColorStop(0.4, 'rgba(0, 173, 255, 0.1)');
               rad.addColorStop(0.7, 'rgba(0, 173, 255, 0.1)');
-              rad.addColorStop(0.7, 'rgba(0, 173, 255, 0.1)');
+              rad.addColorStop(0.7, 'rgba(255, 255, 133, 0.3)');
             } else {
               rad.addColorStop(0.3, 'rgba(255, 0, 133, 0.5)');
-              rad.addColorStop(0.6, 'rgba(255, 0, 133, 0.3)');
+              rad.addColorStop(0.6, 'rgba(255, 0, 133, 0.1)');
               rad.addColorStop(0.7, 'rgba(255, 0, 133, 0.1)');
             }
           } else {
@@ -87,8 +93,9 @@
             rad.addColorStop(1, 'transparent');
             rad.addColorStop(0.1, 'rgba(255, 255, 255, 1.0)');
             rad.addColorStop(0.2, 'rgba(255, 255, 255, 0.1)');
-            rad.addColorStop(0.3, 'rgba(0, 173, 255, 0.5)');
+            rad.addColorStop(0.4, 'rgba(0, 173, 255, 0.1)');
             rad.addColorStop(0.7, 'rgba(47, 185, 255, 0.1)');
+            rad.addColorStop(0.8, 'rgba(255, 0, 133, 0.3)');
           }
 
           cachedCircles[x2d + '-' + y2d + '-' + shapeType + '-' + switchLayout] = rad;
@@ -96,44 +103,39 @@
 
         ctx.fillStyle = cachedCircles[x2d + '-' + y2d + '-' + shapeType + '-' + switchLayout];
 
-
-        ctx.translate(ctx.width, ctx.height);
-
-        if (switchLayout) {
-          ctx.rotate(180);
-        } else {
-          ctx.rotate(0);
-        }
-
         if (shapeType === 1) {
           ctx.fillRect(x2d, y2d, 100, 100);
         } else {
           ctx.fillRect(x2d, y2d, 200, 200);
         }
 
+        // ctx.rotate(25 * Math.PI / 180);
+
       }
 
       pixel.z -= 1;
 
       if (pixel.z < -fov) {
-        pixel.z += 2 * fov;
+        pixel.z += 5 * fov;
       }
     }
 
     setTimeout(function () {
       requestAnimationFrame(render);
-    }, 1000 / 30);
+    }, 1000 / 570);
   }
 
   generate(start);
+  render();
 
-  window.onclick = function () {
+  setInterval(function () {
     switchLayout = !switchLayout;
-    ctx.clearRect(0, 0, ctxWidth, ctxHeight);
+
     if (switchLayout) {
-      body.classList.add('switch');
+      body.classList.add('switch')
     } else {
       body.classList.remove('switch');
     }
-  }
+
+  }, 6000);
 })();
